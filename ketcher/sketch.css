@@ -1,0 +1,41 @@
+	#actionButton {
+  font-weight: bold; /* Make the text bold */
+  border-radius: 12px; /* Rounded corners */
+  padding: 10px 24px; /* Some padding */
+  text-align: center; /* Centered text */
+  text-decoration: none; /* Remove underline */
+  display: inline-block;
+  font-size: 16px;
+  transition-duration: 0.4s; /* Transition effect */
+  cursor: pointer; /* Add a mouse pointer on hover */
+  float: right;
+}
+
+#actionButton:active { /* Change background color when button is clicked */
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+/* Style for "Preview" state */
+#actionButton[data-state="preview"] {
+  background-color: grey; /* Grey background */
+  color: white; /* White text */
+  border: 2px solid grey; /* Grey border */
+}
+
+#actionButton[data-state="preview"]:hover {
+  background-color: white;
+  color: grey;
+}
+
+/* Style for "Confirm & Close" state */
+#actionButton[data-state="confirm"] {
+  background-color: green; /* Green background */
+  color: white; /* White text */
+  border: 2px solid green; /* Green border */
+}
+
+#actionButton[data-state="confirm"]:hover {
+  background-color: white;
+  color: green;
+}
