@@ -1,97 +1,97 @@
-// This file is part of Moodle - https://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+define("tiny_moldraw/commands", [
+  "exports",
+  "editor_tiny/utils",
+  "core/str",
+  "core/templates",
+  "core/modal",
+  "core/config",
+  "./common",
+], function (_exports, _utils, _str, _templates, _modal, _config, _common) {
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+  }
+  /**
+   * Commands helper for the Moodle tiny_moldraw plugin.
+   *
+   * @module      tiny_moldraw/commands
+   * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
+   * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+   */ Object.defineProperty(_exports, "__esModule", { value: !0 }),
+    (_exports.getSetup = void 0),
+    (_templates = _interopRequireDefault(_templates)),
+    (_modal = _interopRequireDefault(_modal)),
+    (_config = _interopRequireDefault(_config));
+ const handleAction = async (editor) => {
+  await _modal.default.create({
+    title: await (0, _str.get_string)("sketchtitle", "tiny_moldraw"),
+    body: `${await _templates.default.render("tiny_moldraw/moldraw_iframe", {src: `${_config.default.wwwroot}/lib/editor/tiny/plugins/moldraw/ketcher/sketch.html`})}`,
+    footer: `<button id="actionButton" class="btn btn-primary">Save</button><script src="${_config.default.wwwroot}/lib/editor/tiny/plugins/moldraw/ketcher/sketch.js"></script>`,
+    show: true,
+    removeOnClose: true,
+  });
 
-/**
- * Commands helper for the Moodle tiny_moldraw plugin.
- *
- * @module      tiny_moldraw/commands
- * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+  var modalDialog = document.querySelector(".modal-dialog");
+  var modalContent = document.querySelector(".modal-content");
+  var modalBody = document.querySelector(".modal-body");
 
-import {getButtonImage} from 'editor_tiny/utils';
-import {get_string as getString} from 'core/str';
-import Templates from 'core/templates';
-import * as Modal from 'core/modal_factory';
-import Config from 'core/config';
-import {
-    component,
-    startMolDrawButtonName,
-    startMolDrawMenuItemName,
-    icon,
-} from './common';
+  if (window.matchMedia("(max-width: 768px)").matches) {
+    modalDialog.style.cssText = "width: 90%; height: 90%; margin: 5% auto; padding: 0;";
+  } else {
+    modalDialog.style.cssText = "width: 850px; height: 680px; margin: auto; padding: 0;";
+  }
 
-/**
- * Handle the action for your plugin.
- * @param {TinyMCE.editor} editor The tinyMCE editor instance.
- */
+  modalContent.style.cssText = "height: 100%; max-height: 100%;";
+  modalBody.style.cssText = "padding: 0; height: calc(100% - 56px);";
 
-const handleAction = async (editor) => {
-    const modal = await Modal.create({
-        type: Modal.types.DEFAULT,
-        title: await getString('sketchtitle', 'tiny_moldraw'),
-        body: await Templates.render('tiny_moldraw/moldraw_iframe', {
-            src: `${Config.wwwroot}/lib/editor/tiny/plugins/moldraw/ketcher/sketch.html`
-        }),
-        show: true,
-        removeOnClose: true,
-    });
+  window.console.log(editor);
 
-    document.querySelector('.modal-dialog').style.cssText = "max-width: unset;width:75%;height:75vh;margin:0;padding:0;";
-    document.querySelector('.modal-content').style.cssText = "max-height: unset;height:100vh;";
-    document.querySelector('.modal-body').style.cssText = "padding:0";
-    window.console.log(editor);
+  // Add event listener for image click
+  editor.on('click', function(e) {
+    if (e.target.nodeName == 'IMG') {
+      // Select the corresponding [ketdata]
+      var ketData = e.target.nextElementSibling;
+      if (ketData && ketData.nodeName == 'KETDATA') {
+        ketData.select();
+      }
+    }
+  });
+
+  // Add event listener for tiny_moldraw edit button click
+  editor.ui.registry.on('click', function() {
+    if (editor.selection.getNode().nodeName == 'KETDATA') {
+      // Retrieve the selected [ketdata]
+      var ketData = editor.selection.getContent();
+
+      // Load the [ketdata] into the Ketcher window for editing
+      ketcher.setMolecule(ketData);
+    }
+  });
 };
-
-
-/**
- * Get the setup function for the buttons.
- *
- * This is performed in an async function which ultimately returns the registration function as the
- * Tiny.AddOnManager.Add() function does not support async functions.
- *
- * @returns {function} The registration function to call within the Plugin.add function.
- */
-export const getSetup = async() => {
+ 
+_exports.getSetup = async () => {
     const [
-        startMolDrawButtonNameTitle,
-        startMolDrawMenuItemNameTitle,
-        buttonImage,
+      startMolDrawButtonNameTitle,
+      startMolDrawMenuItemNameTitle,
+      buttonImage,
     ] = await Promise.all([
-        getString('button_startMolDraw', component),
-        getString('menuitem_startMolDraw', component),
-        getButtonImage('icon', component),
+      (0, _str.get_string)("button_startMolDraw", _common.component),
+      (0, _str.get_string)("menuitem_startMolDraw", _common.component),
+      (0, _utils.getButtonImage)("icon", _common.component),
     ]);
-
     return (editor) => {
-        // Register the Moodle SVG as an icon suitable for use as a TinyMCE toolbar button.
-        editor.ui.registry.addIcon(icon, buttonImage.html);
-
-        // Register the startMolDraw Toolbar Button.
-        editor.ui.registry.addButton(startMolDrawButtonName, {
-            icon,
-            tooltip: startMolDrawButtonNameTitle,
-            onAction: () => handleAction(editor),
-        });
-
-        // Add the startMolDraw Menu Item.
-        // This allows it to be added to a standard menu, or a context menu.
-        editor.ui.registry.addMenuItem(startMolDrawMenuItemName, {
-            icon,
-            text: startMolDrawMenuItemNameTitle,
-            onAction: () => handleAction(editor),
+      editor.ui.registry.addIcon(_common.icon, buttonImage.html),
+        editor.ui.registry.addButton(_common.startMolDrawButtonName, {
+          icon: _common.icon,
+          tooltip: startMolDrawButtonNameTitle,
+          onAction: () => handleAction(editor),
+        }),
+        editor.ui.registry.addMenuItem(_common.startMolDrawMenuItemName, {
+          icon: _common.icon,
+          text: startMolDrawMenuItemNameTitle,
+          onAction: () => handleAction(editor),
         });
     };
-};
+  };
+});
+
+//# sourceMappingURL=commands.min.js.map

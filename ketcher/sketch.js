@@ -1,82 +1,32 @@
 $(document).ready(function() {
-    var isPreview = true;
-
-    async function handleClick() {
-        if (isPreview) {
-            $(this).attr('data-state', 'preview');
-            await outputImage();
-            $(this).html("Confirm & Close").attr('data-state', 'confirm');
-            isPreview = false;
-        } else {
-            closeModal();
+    var iframe = document.getElementById('tinymce_ketcher-iframe');
+    var checkKetcherInterval = setInterval(function() {
+        var ketcher = iframe.contentWindow.ketcher;
+        if (ketcher) {
+            clearInterval(checkKetcherInterval);
+            $("#actionButton").click(function() {
+                handleAction(ketcher);
+            });
         }
-    }
-    $("#width, #height").on('input', outputImage);
-    $("#actionButton").click(handleClick);
+    }, 500); // Check every 500ms
 
-    function blobToBase64(blob) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.onerror = reject;
-            reader.readAsDataURL(blob);
-        });
-    }
-
-    function outputImage() {
-        var output = $('#output');
-        var width = $('#width').val();
-        var height = $('#height').val();
-        ketcher.getKet().then(struct => ketcher.generateImage(struct, {
+    async function handleAction(ketcher) {
+        var struct = await ketcher.getKet();
+        var image = await ketcher.generateImage(struct, {
             outputFormat: "svg",
             backgroundColor: "255, 255, 255"
-        })).then(blob => blobToBase64(blob)).then(base64 => {
-            var img = $('<img>').attr('src', base64).attr('width', width).attr('height', height);
-            output.html('').append(img);
-        }).catch(error => window.alert(error));
-    }
-
-    function getData() {
-        return new Promise((resolve, reject) => {
-            ketcher.getKet().then(struct => {
-                // Convert the struct object to a string
-                var structString = JSON.stringify(struct);
-
-                // Remove the escape characters and newlines
-                var compactStruct = structString.replace(/\\n/g, '').replace(/\\"/g, '"').replace(/ /g, '').slice(1, -1);
-                ketcher.generateImage(struct, {
-                    outputFormat: "svg",
-                    backgroundColor: "255, 255, 255",
-                }).then(blob => blobToBase64(blob)).then(base64 => {
-                    resolve({
-                        dataURI: base64,
-                        ketData: compactStruct,
-                    });
-                }).catch(reject);
-            }).catch(reject);
         });
-    }
-
-    window.getData = getData;
-
-    function closeModal() {
-        var width = $('#width');
-        var height = $('#height');
-        getData().then(({
-            dataURI,
-            ketData
-        }) => {
+        var url = URL.createObjectURL(image);
             if (window.parent.tinyMCE && window.parent.tinyMCE.activeEditor) {
-                var content = '<img src="' + dataURI + '" width="' + width.val() + 'px" height="' + height.val() + 'px">';
+                var content = '<img src="' + url + '" width=100px height=100px>';
+                var ketString = JSON.stringify(struct);
+                var ketStruct = ketString.replace(/\\n/g, '').replace(/\\"/g, '"').replace(/ /g, '').slice(1, -1);
                 window.parent.tinyMCE.activeEditor.execCommand('mceInsertContent', 0, content);
-                window.parent.tinyMCE.activeEditor.execCommand('mceInsertContent', 0, '<!--' + ketData + '-->');
+                window.parent.tinyMCE.activeEditor.execCommand('mceInsertContent', 0, '<!--[ketdata]' + ketStruct + '[/ketdata]-->');
             } else {
                 console.log('TinyMCE not initialized');
             }
-            $(window.parent.document).find(".modal").find('.close').click();
-        }).catch(error => {
-            console.error('ERROR IN GETDATA', error);
-            alert(error);
-        });
+            $(window.parent.document).find(".modal").find('.close').click();        
     }
 });
+
