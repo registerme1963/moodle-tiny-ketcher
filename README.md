@@ -1,1 +1,1 @@
-# moodle-tiny_moldraw
+# moodle-tiny_ketcher

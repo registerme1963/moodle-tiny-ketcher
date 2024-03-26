@@ -14,19 +14,19 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Common values helper for the Moodle tiny_moldraw plugin.
+ * Common values helper for the Moodle tiny_ketcher plugin.
  *
- * @module      tiny_moldraw/common
+ * @module      tiny_ketcher/common
  * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-const component = 'tiny_moldraw';
+const component = 'tiny_ketcher';
 
 export default {
     component,
     pluginName: `${component}/plugin`,
     icon: component,
-    startMolDrawButtonName: `${component}_startMolDraw`,
-    startMolDrawMenuItemName: `${component}_startMolDraw`,
+    ketcherButtonName: `startKetcher`,
+    ketcherMenuName: `startKetcher`,
 };

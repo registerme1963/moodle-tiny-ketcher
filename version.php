@@ -17,13 +17,15 @@
 /**
  * Plugin version and other meta-data are defined here.
  *
- * @package     tiny_moldraw
+ * @package     tiny_ketcher
  * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'tiny_moldraw';
-$plugin->release = '0.1.0';
-$plugin->version = 2024030200;
+$plugin->version   = 2024032500;        // The current plugin version (Date: YYYYMMDDXX).
+$plugin->release   = '4.3.3';           // The plugin's latest Moodle version tested with.
+$plugin->requires  = 2023100900;        // Requires this Moodle version.
+$plugin->component = 'tiny_sketch';
+$plugin->maturity = MATURITY_ALPHA;

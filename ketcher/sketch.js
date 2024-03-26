@@ -1,74 +1,90 @@
+<<<<<<< Updated upstream
 $(document).ready(function() {
-var isPreview = true;
+    var iframe = document.getElementById('tinymce_ketcher-iframe');
+    var checkKetcherInterval = setInterval(function() {
+        var ketcher = iframe.contentWindow.ketcher;
+        if (ketcher) {
+            clearInterval(checkKetcherInterval);
+            $("#actionButton").click(function() {
+                handleAction(ketcher);
+            });
+        }
+    }, 500); // Check every 500ms
 
-async function handleClick() {
-  if (isPreview) {
-    $(this).attr('data-state', 'preview');
-    await outputImage();
-    $(this).html("Confirm & Close").attr('data-state', 'confirm');
-    isPreview = false;
-  } else {
-    closeModal();
-  }
-}
-$("#width, #height").on('input', outputImage);
-$("#actionButton").click(handleClick);
+=======
+$(document).ready(function () {
+    var iframe = document.getElementById('tinymce_ketcher-iframe');
+    // Define ketcher in the global scope
+    window.ketcher = null;
 
-function blobToBase64(blob) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
-}
+    var checkKetcherInterval = setInterval(function () {
+        var ketcher = iframe.contentWindow.ketcher;
+        if (ketcher) {
+            clearInterval(checkKetcherInterval);
 
-function outputImage() {
-  var output = $('#output');
-  var width = $('#width').val();
-  var height = $('#height').val();
-  ketcher.getKet().then(struct => ketcher.generateImage(struct, {
-    outputFormat: "svg",
-    backgroundColor: "255, 255, 255"
-  })).then(blob => blobToBase64(blob)).then(base64 => {
-    var img = $('<img>').attr('src', base64).attr('width', width).attr('height', height);
-    output.html('').append(img);
-  }).catch(error => window.alert(error));
-}
+            // Assign the ketcher API to the global ketcher variable
+            window.ketcher = ketcher;
 
-function getData() {
-  return new Promise((resolve, reject) => {
-    ketcher.getKet().then(struct => {
-      ketcher.generateImage(struct, {
-        outputFormat: "svg",
-        backgroundColor: "255, 255, 255",
-      }).then(blob => blobToBase64(blob)).then(base64 => {
-        resolve({
-          dataURI: base64,
-          ketData: struct,
+            $("#actionButton").click(function () {
+                handleAction(ketcher);
+            });
+        }
+    }, 500); // Check every 500ms
+
+>>>>>>> Stashed changes
+    async function handleAction(ketcher) {
+        var struct = await ketcher.getKet();
+        var image = await ketcher.generateImage(struct, {
+            outputFormat: "svg",
+            backgroundColor: "255, 255, 255"
         });
-      }).catch(reject);
-    }).catch(reject);
-  });
-}
-
-window.getData = getData;
-
-function closeModal() {
-  var width = $('#width');
-  var height = $('#height');
-  getData().then(({ dataURI, ketData }) => {
-    if (window.parent.tinyMCE && window.parent.tinyMCE.activeEditor) {
-      var content = '<img src="' + dataURI + '" width="' + width.val() + 'px" height="' + height.val() + 'px">';
-      window.parent.tinyMCE.activeEditor.execCommand('mceInsertContent', 0, content);
-      window.parent.tinyMCE.activeEditor.execCommand('mceInsertContent', 0, '<!--'+ketData+'-->');
-    } else {
-      console.log('TinyMCE not initialized');
+<<<<<<< Updated upstream
+        var url = URL.createObjectURL(image);
+            if (window.parent.tinyMCE && window.parent.tinyMCE.activeEditor) {
+                var content = '<img src="' + url + '" width=100px height=100px>';
+                var ketString = JSON.stringify(struct);
+                var ketStruct = ketString.replace(/\\n/g, '').replace(/\\"/g, '"').replace(/ /g, '').slice(1, -1);
+                window.parent.tinyMCE.activeEditor.execCommand('mceInsertContent', 0, content);
+                window.parent.tinyMCE.activeEditor.execCommand('mceInsertContent', 0, '<!--[ketdata]' + ketStruct + '[/ketdata]-->');
+            } else {
+                console.log('TinyMCE not initialized');
+            }
+            $(window.parent.document).find(".modal").find('.close').click();        
     }
-    $(window.parent.document).find(".modal").find('.close').click();
-  }).catch(error => {
-    console.error('ERROR IN GETDATA', error);
-    alert(error);
-  });
-}
 });
+
+=======
+
+        // Create a new FileReader instance
+        var reader = new FileReader();
+
+        // Add an event listener for the 'load' event
+        reader.addEventListener('load', function () {
+            // The result attribute contains the data as a Base64 encoded string
+            var base64Image = reader.result;
+
+            // Parse the SVG to get the width and height
+            var parser = new DOMParser();
+            var svgDoc = parser.parseFromString(atob(base64Image.split(',')[1]), "image/svg+xml");
+            var svgElement = svgDoc.documentElement;
+            var width = svgElement.getAttribute("width");
+            var height = svgElement.getAttribute("height");
+            if (window.parent.tinyMCE && window.parent.tinyMCE.activeEditor) {
+                var url = URL.createObjectURL(image);
+                var ketString = JSON.stringify(struct);
+                var ketStruct = ketString.replace(/\\n/g, '').replace(/\\"/g, '"').replace(/ /g, '').slice(1, -1);
+                var content = '<img src="' + url + '" width="' + width + '" height="' + height + '">';
+                window.parent.tinyMCE.activeEditor.execCommand('mceInsertContent', 0, content);
+                window.parent.tinyMCE.activeEditor.execCommand('mceInsertContent', 0, '<!--' + ketStruct + '-->');
+            } else {
+                console.log('TinyMCE not initialized');
+            }
+            $(window.parent.document).find(".modal").find('.close').click();
+        });
+
+        // Start reading the Blob as a Base64 encoded string
+        reader.readAsDataURL(image);
+    }
+
+});
+>>>>>>> Stashed changes
