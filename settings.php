@@ -17,7 +17,7 @@
 /**
  * Plugin administration pages are defined here.
  *
- * @package     tiny_moldraw
+ * @package     tiny_ketcher
  * @category    admin
  * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-    $settings = new admin_settingpage('tiny_moldraw_settings', new lang_string('pluginname', 'tiny_moldraw'));
+    $settings = new admin_settingpage('tiny_ketcher_settings', new lang_string('pluginname', 'tiny_ketcher'));
 
     // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedIf
     if ($ADMIN->fulltree) {

@@ -14,28 +14,29 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Tiny tiny_moldraw for Moodle.
+ * Tiny tiny_ketcher for Moodle.
  *
- * @module      tiny_moldraw/plugin
+ * @module      tiny_ketcher/plugin
  * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 import {
-    startMolDrawButtonName,
-    startMolDrawMenuItemName,
-} from './common';
-
+    ketcherButtonName,
+    ketcherMenuName,
+}
+from './common';
 import {
     addMenubarItem,
     addToolbarButtons,
-} from 'editor_tiny/utils';
+}
+from 'editor_tiny/utils';
 
 const getToolbarConfiguration = (instanceConfig) => {
     let toolbar = instanceConfig.toolbar;
     toolbar = addToolbarButtons(toolbar, 'content', [
-        startMolDrawButtonName,
-    ]);
+                ketcherButtonName,
+            ]);
 
     return toolbar;
 };
@@ -43,8 +44,8 @@ const getToolbarConfiguration = (instanceConfig) => {
 const getMenuConfiguration = (instanceConfig) => {
     let menu = instanceConfig.menu;
     menu = addMenubarItem(menu, 'file', [
-        startMolDrawMenuItemName,
-    ].join(' '));
+                ketcherMenuName,
+            ].join(' '));
 
     return menu;
 };

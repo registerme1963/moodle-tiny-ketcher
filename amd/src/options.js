@@ -14,15 +14,21 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Options helper for the Moodle tiny_moldraw plugin.
+ * Options helper for the Moodle tiny_ketcher plugin.
  *
- * @module      tiny_moldraw/options
+ * @module      tiny_ketcher/options
  * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {getPluginOptionName} from 'editor_tiny/options';
-import {pluginName} from './common';
+import {
+    getPluginOptionName
+}
+from 'editor_tiny/options';
+import {
+    pluginName
+}
+from './common';
 
 // Helper variables for the option names.
 const myFirstPropertyName = getPluginOptionName(pluginName, 'myFirstProperty');

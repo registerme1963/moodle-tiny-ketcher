@@ -17,7 +17,7 @@
 /**
  * Plugin strings are defined here.
  *
- * @package     tiny_moldraw
+ * @package     tiny_ketcher
  * @category    string
  * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,9 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['button_startMolDraw'] = 'Start MOL Draw';
-$string['menuitem_startMolDraw'] = 'Start MOL Draw';
-$string['pluginname'] = 'Start MOL Draw';
 $string['pluginname'] = 'Chemical Structure Editor';
-$string['privacy:metadata'] = 'Chemical Structure Editor does not store any personal data';
-$string['sketchtitle'] = 'Chemical Structure Editor';
+$string['ketcherButtonNameTitle'] = 'Ketcher Editor';
+$string['ketcherButtonNameTitle'] = 'Ketcher Editor';
+$string['privacy:metadata'] = 'Ketcher does not store any personal data';
+$string['ketchertitle'] = 'Ketcher Chemical Structure Editor';

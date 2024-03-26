@@ -14,23 +14,39 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Tiny tiny_moldraw for Moodle.
+ * Tiny tiny_ketcher for Moodle.
  *
- * @module      tiny_moldraw/plugin
+ * @module      tiny_ketcher/plugin
  * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {getTinyMCE} from 'editor_tiny/loader';
-import {getPluginMetadata} from 'editor_tiny/utils';
+import {
+    getTinyMCE
+}
+from 'editor_tiny/loader';
+import {
+    getPluginMetadata
+}
+from 'editor_tiny/utils';
 
-import {component, pluginName} from './common';
-import {register as registerOptions} from './options';
-import {getSetup as getCommandSetup} from './commands';
+import {
+    component,
+    pluginName
+}
+from './common';
+import {
+    register as registerOptions
+}
+from './options';
+import {
+    getSetup as getCommandSetup
+}
+from './commands';
 import * as Configuration from './configuration';
 
-// Setup the tiny_moldraw Plugin.
-export default new Promise(async (resolve) => {
+// Setup the tiny_ketcher Plugin.
+export default new Promise(async(resolve) => {
     // Note: The PluginManager.add function does not support asynchronous configuration.
     // Perform any asynchronous configuration here, and then call the PluginManager.add function.
     const [
@@ -38,10 +54,10 @@ export default new Promise(async (resolve) => {
         pluginMetadata,
         setupCommands,
     ] = await Promise.all([
-        getTinyMCE(),
-        getPluginMetadata(component, pluginName),
-        getCommandSetup(),
-    ]);
+                getTinyMCE(),
+                getPluginMetadata(component, pluginName),
+                getCommandSetup(),
+            ]);
 
     // Reminder: Any asynchronous code must be run before this point.
     tinyMCE.PluginManager.add(pluginName, (editor) => {
