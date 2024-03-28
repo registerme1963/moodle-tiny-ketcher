@@ -32,7 +32,6 @@ from 'core/str';
 import {
     component,
     ketcherButtonName,
-    ketcherMenuName,
     icon,
 }
 from './common';
@@ -40,30 +39,6 @@ import {
     KetcherEmbed
 }
 from './embed';
-
-// Function to find the hidden JSON data after the selected image
-const findNextKetData = (editor) => {
-    const selectedNode = editor.selection.getNode();
-    let sibling = selectedNode.nextSibling;
-    while (sibling && sibling.nodeType !== 8) { // Node.COMMENT_NODE === 8
-        if (sibling.nodeName === 'BR') {
-            sibling = sibling.nextSibling; // Move to the next sibling after <br>
-            while (sibling && sibling.nodeType !== 8) { // Node.COMMENT_NODE === 8
-                sibling = sibling.nextSibling;
-            }
-            if (sibling) {
-                const data = JSON.parse(sibling.nodeValue);
-                sibling.parentNode.removeChild(sibling); // Remove the sibling
-                return data;
-            }
-        }
-        sibling = sibling.nextSibling;
-    }
-    if (sibling) {
-        return JSON.parse(sibling.nodeValue);
-    }
-    return null;
-};
 
 /**
  * Handle the action for your plugin.
@@ -75,15 +50,15 @@ const handleAction = (editor) => {
     ketcherImage.init();
 };
 
-
 export const getSetup = async() => {
+    const isImage = (node) => node.nodeName.toLowerCase() === 'img';
+
     const [
         ketcherButtonNameTitle,
-        ketcherMenuNameTitle,
         buttonImage,
     ] = await Promise.all([
                 getString('ketcherButtonNameTitle', component),
-                getString('ketcherMenuNameTitle', component),
+                getString('ketcherButtonNameTitle', component),
                 getButtonImage('icon', component),
             ]);
 
@@ -101,35 +76,46 @@ export const getSetup = async() => {
         editor.ui.registry.addToggleButton(ketcherButtonName, {
             icon,
             tooltip: ketcherButtonNameTitle,
-            onAction: () => handleAction(editor),
-            onSetup: (buttonApi) => {
-                editor.on('NodeChange', () => {
-                    const selectedNode = editor.selection.getNode();
-                    if (selectedNode.nodeName === 'IMG') {
-                        var tempData = findNextKetData(editor);
-                        window.ketData = JSON.stringify(tempData);
-                        if (tempData) {
-                            buttonApi.setActive(true);
-                        } else {
-                            buttonApi.setActive(false);
+            onAction: () => handleAction(editor, window.json),
+            onSetup: api => {
+                return editor.selection.selectorChangedWithUnbind(
+                    'img:not([data-mce-object]):not([data-mce-placeholder]),figure.image',
+                    function () {
+                    var node = editor.selection.getNode();
+                    var parentNode = node.parentNode;
+                    const html = editor.serializer.serialize(parentNode);
+                    const commentMatch = html.match(/<!--(.*?)-->/);
+                    if (commentMatch) {
+                        try {
+                            var json = JSON.parse(commentMatch[1]);
+                            // If the comment contains valid JSON, call api.setActive and store the JSON
+                            api.setActive(true);
+                            window.json = JSON.stringify(json); // Save the JSON to window.json
+                        } catch (e) {
+                            // If the comment does not contain valid JSON, call api.setActive with false
+                            api.setActive(false);
                         }
                     } else {
-                        buttonApi.setActive(false);
+                        api.setActive(false);
                     }
-                });
-                return () => {
-                    editor.off('NodeChange');
-                };
-            },
+                }).unbind;
+            }
+        });
+
+        editor.ui.registry.addContextToolbar(ketcherButtonName, {
+            predicate: isImage,
+            items: ketcherButtonName,
+            position: 'node',
+            scope: 'node'
         });
 
         // Add the startdemo Menu Item.
         // This allows it to be added to a standard menu, or a context menu.
-        editor.ui.registry.addMenuItem(ketcherMenuName, {
+        editor.ui.registry.addMenuItem(ketcherButtonName, {
             icon,
-            text: ketcherMenuNameTitle,
+            text: ketcherButtonNameTitle,
             onAction: () => handleAction(editor),
         });
+
     };
 };
-

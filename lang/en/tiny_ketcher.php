@@ -27,6 +27,5 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Chemical Structure Editor';
 $string['ketcherButtonNameTitle'] = 'Ketcher Editor';
-$string['ketcherButtonNameTitle'] = 'Ketcher Editor';
 $string['privacy:metadata'] = 'Ketcher does not store any personal data';
 $string['ketchertitle'] = 'Ketcher Chemical Structure Editor';
