@@ -58,7 +58,6 @@ export const getSetup = async() => {
         buttonImage,
     ] = await Promise.all([
                 getString('ketcherButtonNameTitle', component),
-                getString('ketcherButtonNameTitle', component),
                 getButtonImage('icon', component),
             ]);
 
