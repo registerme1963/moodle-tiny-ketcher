@@ -63,6 +63,8 @@ export const KetcherEmbed = class {
             removeOnClose: true,
         });
 
+
+
         var modalDialog = document.querySelector(".modal-dialog");
         var modalContent = document.querySelector(".modal-content");
         var modalBody = document.querySelector(".modal-body");
@@ -75,7 +77,7 @@ export const KetcherEmbed = class {
         }
 
         modalContent.style.cssText = "height: 100%; max-height: 100%;";
-        modalBody.style.cssText = "padding: 0; height: calc(100% - 50px);";
+        modalBody.style.cssText = "padding: 0; height: 80vh; overflow-y:inherit !important";
         modalFooter.style.cssText = "display: inherit; height: 50px;";
 
         Templates.renderForPromise('tiny_ketcher/ketcher_iframe', {
@@ -86,9 +88,11 @@ export const KetcherEmbed = class {
                 js
             }) => {
             Templates.appendNodeContents(modal.getBody(), html, js);
-
             // Get the iframe element
             const iframe = document.getElementById('tinymce_ketcher-iframe');
+            // Set the height of the iframe to 100%
+            iframe.style.height = '100%';
+            iframe.style.width = '100%';
             // Add a load event listener to the iframe
             iframe.addEventListener('load', function () {
                 // Make sure window.ketData is valid
