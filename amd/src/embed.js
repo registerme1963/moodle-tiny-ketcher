@@ -92,11 +92,11 @@ export const KetcherEmbed = class {
             // Add a load event listener to the iframe
             iframe.addEventListener('load', function () {
                 // Make sure window.ketData is valid
-                if (window.ketData) {
+                if (window.json) {
                     // Call the ketcher.setMolecule API after a delay
                     setTimeout(function () {
                         if (iframe.contentWindow.ketcher) {
-                            iframe.contentWindow.ketcher.setMolecule(window.ketData);
+                            iframe.contentWindow.ketcher.setMolecule(window.json);
                         } else {
                             window.console.log('ketcher is not defined');
                         }
@@ -105,7 +105,7 @@ export const KetcherEmbed = class {
             });
 
             // Add the script to the modal footer after the iframe is loaded
-            const scripturl = new URL(`${Config.wwwroot}/lib/editor/tiny/plugins/ketcher/ketcher/sketch.min.js`);
+            const scripturl = new URL(`${Config.wwwroot}/lib/editor/tiny/plugins/ketcher/ketcher/sketch.js`);
             var script = document.createElement('script');
             script.src = scripturl.toString();
             var button = document.createElement('button');
@@ -116,7 +116,5 @@ export const KetcherEmbed = class {
 
         })
         .catch((error) => displayException(error));
-        delete window.ketdata;
     };
 };
-

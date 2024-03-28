@@ -28,5 +28,4 @@ export default {
     pluginName: `${component}/plugin`,
     icon: component,
     ketcherButtonName: `startKetcher`,
-    ketcherMenuName: `startKetcher`,
 };
