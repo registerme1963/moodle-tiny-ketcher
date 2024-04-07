@@ -1,1 +1,1 @@
-# moodle-tiny_ketcher
+# moodle-tiny_keteditor

@@ -1,17 +1,12 @@
-$(document).ready(function() {
-    var iframe = document.getElementById('tinymce_ketcher-iframe');
-// Define ketcher in the global scope
-    window.ketcher = null;
-    var checkKetcherInterval = setInterval(function() {
-        var ketcher = iframe.contentWindow.ketcher;
-        if (ketcher) {
-            clearInterval(checkKetcherInterval);
+document.addEventListener('DOMContentLoaded', function() {
+    var checkInterval = setInterval(function() {
+        var ketcherRoot = document.querySelector('.ketcher-root');
+        var actionButton = document.getElementById('actionButton');
+        if (ketcherRoot && window.ketcher && actionButton) {
+            clearInterval(checkInterval);
 
-// Assign the ketcher API to the global ketcher variable
-            window.ketcher = ketcher;
-
-            $("#actionButton").click(function() {
-                handleAction(ketcher);
+            actionButton.addEventListener('click', function() {
+                handleAction(window.ketcher);
             });
         }
     }, 500); // Check every 500ms

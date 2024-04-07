@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template tiny_ketcher/ketcher_iframe
+    @template tiny_keteditor/ketcher_iframe
 
     Insert ketcher window for chemical structure drawing.
 
@@ -24,4 +24,7 @@
 
     }
 }}
-<iframe class="tinymce_ketcher-iframe" id="tinymce_ketcher-iframe" allow="camera" src={{src}}></iframe>
+<div class="center">
+    <div id="root"></div>
+    <button class="btn btn-primary" id="actionButton">Save</button>
+</div>

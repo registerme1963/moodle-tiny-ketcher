@@ -17,13 +17,13 @@
 /**
  * Plugin version and other meta-data are defined here.
  *
- * @package     tiny_ketcher
+ * @package     tiny_keteditor
  * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'tiny_ketcher';
+$plugin->component = 'tiny_keteditor';
 $plugin->release = '0.1.1';
 $plugin->version = 2024030200;

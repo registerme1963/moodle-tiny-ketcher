@@ -16,7 +16,7 @@
 /**
  * Options helper for the Moodle tiny_ketcher plugin.
  *
- * @module      tiny_ketcher/options
+ * @module      tiny_keteditor/options
  * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -31,7 +31,7 @@ import {
 from './common';
 
 // Helper variables for the option names.
-const myFirstPropertyName = getPluginOptionName(pluginName, 'myFirstProperty');
+const showPlugin = getPluginOptionName(pluginName, 'showplugin');
 
 /**
  * Options registration function.
@@ -41,10 +41,9 @@ const myFirstPropertyName = getPluginOptionName(pluginName, 'myFirstProperty');
 export const register = (editor) => {
     const registerOption = editor.options.register;
 
-    // For each option, register it with the editor.
-    // Valid type are defined in https://www.tiny.cloud/docs/tinymce/6/apis/tinymce.editoroptions/
-    registerOption(myFirstPropertyName, {
-        processor: 'string',
+    registerOption(showPlugin, {
+        processor: 'boolean',
+        "default": true,
     });
 };
 
@@ -54,4 +53,4 @@ export const register = (editor) => {
  * @param {tinyMCE} editor The editor instance to fetch the value for
  * @returns {object} The value of the myFirstProperty option
  */
-export const getMyFirstProperty = (editor) => editor.options.get(myFirstPropertyName);
+export const isPluginVisible = (editor) => editor.options.get(showPlugin);

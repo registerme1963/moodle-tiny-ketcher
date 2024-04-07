@@ -14,9 +14,9 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Tiny tiny_ketcher for Moodle.
+ * Tiny tiny_keteditor for Moodle.
  *
- * @module      tiny_ketcher/plugin
+ * @module      tiny_keteditor/plugin
  * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -32,7 +32,7 @@ from 'editor_tiny/utils';
 
 import {
     component,
-    pluginName
+    pluginName,
 }
 from './common';
 import {
@@ -47,8 +47,6 @@ import * as Configuration from './configuration';
 
 // Setup the tiny_ketcher Plugin.
 export default new Promise(async(resolve) => {
-    // Note: The PluginManager.add function does not support asynchronous configuration.
-    // Perform any asynchronous configuration here, and then call the PluginManager.add function.
     const [
         tinyMCE,
         pluginMetadata,
@@ -59,7 +57,6 @@ export default new Promise(async(resolve) => {
                 getCommandSetup(),
             ]);
 
-    // Reminder: Any asynchronous code must be run before this point.
     tinyMCE.PluginManager.add(pluginName, (editor) => {
         // Register any options that your plugin has
         registerOptions(editor);

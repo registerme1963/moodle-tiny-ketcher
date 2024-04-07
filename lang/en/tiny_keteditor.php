@@ -15,21 +15,17 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin administration pages are defined here.
+ * Plugin strings are defined here.
  *
- * @package     tiny_ketcher
- * @category    admin
+ * @package     tiny_keteditor
+ * @category    string
  * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-if ($hassiteconfig) {
-    $settings = new admin_settingpage('tiny_ketcher_settings', new lang_string('pluginname', 'tiny_ketcher'));
-
-    // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedIf
-    if ($ADMIN->fulltree) {
-        // TODO: Define actual plugin settings page and add it to the tree - {@link https://docs.moodle.org/dev/Admin_settings}.
-    }
-}
+$string['pluginName'] = 'Ketcher Editor';
+$string['privacy:metadata'] = 'Chemical Structure Editor does not store any personal data';
+$string['sketchtitle'] = 'Ketcher Editor';
+$string['buttonNameTitle'] = 'Ketcher Editor';

@@ -14,9 +14,9 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Common values helper for the Moodle tiny_ketcher plugin.
+ * Common values helper for the Moodle tiny_keteditor plugin.
  *
- * @module      tiny_ketcher/embed
+ * @module      tiny_keteditor/embed
  * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -33,92 +33,85 @@ import {
 }
 from 'core/notification';
 
-export const KetcherEmbed = class {
+export const ketcherEmbed = class {
     editor = null;
-    canShowFilePicker = false;
-
-    /**
-     * @property {Object} The names of the alignment options.
-     */
-    helpStrings = null;
-
-    /**
-     * @property {boolean} Indicate that the user is updating the media or not.
-     */
-    isUpdating = false;
-
     constructor(editor) {
         this.editor = editor;
     }
-
-    getIframeURL = () => {
-        const url = new URL(`${Config.wwwroot}/lib/editor/tiny/plugins/ketcher/ketcher/sketch.html`);
-        return url.toString();
-    };
-
     init = async() => {
         const modal = await Modal.create({
-            title: getString('ketchertitle', 'tiny_ketcher'),
+            title: getString('buttonNameTitle', 'tiny_keteditor'),
             show: true,
             removeOnClose: true,
         });
-
-
-
-        var modalDialog = document.querySelector(".modal-dialog");
-        var modalContent = document.querySelector(".modal-content");
-        var modalBody = document.querySelector(".modal-body");
-        var modalFooter = document.querySelector(".modal-footer");
-
-        if (window.matchMedia("(max-width: 768px)").matches) {
-            modalDialog.style.cssText = "width: 90%; height: 90%; margin: 5% auto; padding: 0;";
-        } else {
-            modalDialog.style.cssText = "width: 850px; height: 720px; margin: auto; padding: 0;";
-        }
-
-        modalContent.style.cssText = "height: 100%; max-height: 100%;";
-        modalBody.style.cssText = "padding: 0; height: 80vh; overflow-y:inherit !important";
-        modalFooter.style.cssText = "display: inherit; height: 50px;";
-
-        Templates.renderForPromise('tiny_ketcher/ketcher_iframe', {
-            src: this.getIframeURL()
-        })
-        .then(({
+        Templates.renderForPromise('tiny_keteditor/ketcher_template', {})
+        .then(async({
                 html,
                 js
             }) => {
             Templates.appendNodeContents(modal.getBody(), html, js);
-            // Get the iframe element
-            const iframe = document.getElementById('tinymce_ketcher-iframe');
-            // Set the height of the iframe to 100%
-            iframe.style.height = '100%';
-            iframe.style.width = '100%';
-            // Add a load event listener to the iframe
-            iframe.addEventListener('load', function () {
-                // Make sure window.ketData is valid
-                if (window.json) {
-                    // Call the ketcher.setMolecule API after a delay
-                    setTimeout(function () {
-                        if (iframe.contentWindow.ketcher) {
-                            iframe.contentWindow.ketcher.setMolecule(window.json);
-                        } else {
-                            window.console.log('ketcher is not defined');
-                        }
-                    }, 1000); // Adjust the delay as needed
-                }
-            });
-
-            // Add the script to the modal footer after the iframe is loaded
-            const scripturl = new URL(`${Config.wwwroot}/lib/editor/tiny/plugins/ketcher/ketcher/sketch.js`);
+            const scripturl = new URL(`${Config.wwwroot}/lib/editor/tiny/plugins/keteditor/ketcher/static/js/main.963f80c2.js`);
             var script = document.createElement('script');
             script.src = scripturl.toString();
-            var button = document.createElement('button');
-            button.id = "actionButton";
-            button.className = "btn btn-primary";
-            button.textContent = "Save";
-            modal.getFooter().append(button, script);
-
+            document.body.appendChild(script); // Append the script to the body
+            const cssurl = new URL(`${Config.wwwroot}/lib/editor/tiny/plugins/keteditor/ketcher/static/css/main.3fc9c0f8.css`);
+            var link = document.createElement('link');
+            link.href = cssurl.toString();
+            link.rel = 'stylesheet';
+            document.head.appendChild(link); // Append the link to the head
         })
         .catch((error) => displayException(error));
     };
+    waitForKetcher = () => {
+        return new Promise((resolve, reject) => {
+            const checkKetcher = setInterval(() => {
+                if (window.ketcher) {
+                    clearInterval(checkKetcher);
+                    resolve(window.ketcher);
+                }
+            }, 100);
+            setTimeout(() => {
+                clearInterval(checkKetcher);
+                reject(new Error('Ketcher loading timeout'));
+            }, 5000); // Timeout after 5 seconds
+        });
+    };
+};
+
+export const saveData = async function() {
+    var ketcher = window.ketcher;
+    var struct = await ketcher.getKet();
+    var image = await ketcher.generateImage(struct, {
+        outputFormat: "svg",
+        backgroundColor: "255, 255, 255"
+    });
+    // Create a new FileReader instance
+    var reader = new FileReader();
+    // Add an event listener for the 'load' event
+    reader.addEventListener('load', function() {
+        // The result attribute contains the data as a Base64 encoded string
+        var base64Image = reader.result;
+
+        // Parse the SVG to get the width and height
+        var parser = new DOMParser();
+        var svgDoc = parser.parseFromString(atob(base64Image.split(',')[1]), "image/svg+xml");
+        var svgElement = svgDoc.documentElement;
+        var width = svgElement.getAttribute("width");
+        var height = svgElement.getAttribute("height");
+        if (window.parent.tinyMCE && window.parent.tinyMCE.activeEditor) {
+            var url = URL.createObjectURL(image);
+            var ketString = JSON.stringify(struct);
+            var ketStruct = ketString.replace(/\\n/g, '').replace(/\\"/g, '"').replace(/ /g, '').slice(1, -1);
+            var content = '<img src="' + url + '" width="' + width + '" height="' + height + '">';
+            window.parent.tinyMCE.activeEditor.execCommand('mceInsertContent', 0, content);
+            window.parent.tinyMCE.activeEditor.execCommand('mceInsertContent', 0, '<!--' + ketStruct + '-->');
+        } else {
+            window.console.log('TinyMCE not initialized');
+        }
+        window.parent.document.querySelector(".modal .close").click();
+//$(window.parent.document).find(".modal").find('.close').click();
+    });
+
+    // Start reading the Blob as a Base64 encoded string
+    reader.readAsDataURL(image);
 };
