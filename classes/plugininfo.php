@@ -17,12 +17,12 @@
 /**
  * Tiny Chemical Structure Editor plugin for Moodle.
  *
- * @package     tiny_ketcher
+ * @package     tiny_keteditor
  * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tiny_ketcher;
+namespace tiny_keteditor;
 
 use context;
 use editor_tiny\plugin;
@@ -34,13 +34,13 @@ class plugininfo extends plugin implements plugin_with_configuration, plugin_wit
 
     public static function get_available_buttons(): array {
         return [
-            'tiny_ketcher/plugin',
+            'tiny_keteditor/plugin',
         ];
     }
 
     public static function get_available_menuitems(): array {
         return [
-            'tiny_ketcher/plugin',
+            'tiny_keteditor/plugin',
         ];
     }
 

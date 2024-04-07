@@ -14,9 +14,9 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Common values helper for the Moodle tiny_ketcher plugin.
+ * Common values helper for the Moodle tiny_keteditor plugin.
  *
- * @module      tiny_ketcher/commands
+ * @module      tiny_keteditor/commands
  * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -31,34 +31,47 @@ import {
 from 'core/str';
 import {
     component,
-    ketcherButtonName,
     icon,
+    buttonName
 }
 from './common';
 import {
-    KetcherEmbed
+    ketcherEmbed,
+    saveData
 }
 from './embed';
 
+const isImage = (node) => node.nodeName.toLowerCase() === 'img';
 /**
  * Handle the action for your plugin.
  * @param {TinyMCE.editor} editor The tinyMCE editor instance.
  */
 
-const handleAction = (editor) => {
-    const ketcherImage = new KetcherEmbed(editor);
+const handleAction = async(editor) => {
+    const ketcherImage = new ketcherEmbed(editor);
     ketcherImage.init();
+    try {
+        const ketcher = await ketcherImage.waitForKetcher();
+        if (window.json) {
+            window.console.log("molecule loading...", window.json);
+            ketcher.setMolecule(window.json);
+        } else {
+            window.console.log("Ketcher Molecular Data Not Available");
+        }
+    } catch (error) {
+        window.console.error(error.message);
+    }
+    document.getElementById('actionButton').addEventListener('click', saveData);
 };
 
 export const getSetup = async() => {
-    const isImage = (node) => node.nodeName.toLowerCase() === 'img';
+    //    const isImage = (node) => node.nodeName.toLowerCase() === 'img';
 
     const [
-        ketcherButtonNameTitle,
+        buttonNameTitle,
         buttonImage,
     ] = await Promise.all([
-                getString('ketcherButtonNameTitle', component),
-                getString('ketcherButtonNameTitle', component),
+                getString('buttonNameTitle', component),
                 getButtonImage('icon', component),
             ]);
 
@@ -67,15 +80,15 @@ export const getSetup = async() => {
         editor.ui.registry.addIcon(icon, buttonImage.html);
 
         // Register the startdemo Toolbar Button.
-        editor.ui.registry.addButton(ketcherButtonName, {
+        editor.ui.registry.addButton(buttonName, {
             icon,
-            tooltip: ketcherButtonNameTitle,
+            tooltip: buttonNameTitle,
             onAction: () => handleAction(editor),
         });
 
-        editor.ui.registry.addToggleButton(ketcherButtonName, {
+        editor.ui.registry.addToggleButton(buttonName, {
             icon,
-            tooltip: ketcherButtonNameTitle,
+            tooltip: buttonNameTitle,
             onAction: () => handleAction(editor, window.json),
             onSetup: api => {
                 return editor.selection.selectorChangedWithUnbind(
@@ -102,18 +115,18 @@ export const getSetup = async() => {
             }
         });
 
-        editor.ui.registry.addContextToolbar(ketcherButtonName, {
+        editor.ui.registry.addContextToolbar(buttonName, {
             predicate: isImage,
-            items: ketcherButtonName,
+            items: buttonName,
             position: 'node',
             scope: 'node'
         });
 
         // Add the startdemo Menu Item.
         // This allows it to be added to a standard menu, or a context menu.
-        editor.ui.registry.addMenuItem(ketcherButtonName, {
+        editor.ui.registry.addMenuItem(buttonName, {
             icon,
-            text: ketcherButtonNameTitle,
+            text: buttonNameTitle,
             onAction: () => handleAction(editor),
         });
 

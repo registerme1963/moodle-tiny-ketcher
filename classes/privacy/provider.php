@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace tiny_ketcher\privacy;
+namespace tiny_keteditor\privacy;
 
 /**
  * Privacy API implementation for the Chemical Structure Editor plugin.
  *
- * @package     tiny_ketcher
+ * @package     tiny_keteditor
  * @category    privacy
  * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

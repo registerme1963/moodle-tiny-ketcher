@@ -14,42 +14,36 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Tiny tiny_ketcher for Moodle.
+ * Tiny tiny_keteditor for Moodle.
  *
- * @module      tiny_ketcher/configurastion
+ * @module      tiny_keteditor/configurastion
  * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 import {
-    ketcherButtonName,
-} from './common';
+    buttonName
+}
+from './common';
 import uploadFile from 'editor_tiny/uploader';
 import {
     addContextmenuItem,
-} from 'editor_tiny/utils';
+}
+from 'editor_tiny/utils';
 
 const configureMenu = (menu) => {
-    // Replace the standard image plugin with the Moodle image.
-    if (menu.insert.items.match(/\bimage\b/)) {
-        menu.insert.items = menu.insert.items.replace(/\bimage\b/, ketcherButtonName);
-    } else {
-        menu.insert.items = `${ketcherButtonName} ${menu.insert.items}`;
-    }
-
+    menu.insert.items = `${buttonName} ${menu.insert.items}`;
     return menu;
 };
 
 const configureToolbar = (toolbar) => {
     // The toolbar contains an array of named sections.
     // The Moodle integration ensures that there is a section called 'content'.
-
     return toolbar.map((section) => {
         if (section.name === 'content') {
             // Insert the image, and embed, buttons at the start of it.
-            section.items.unshift(ketcherButtonName);
+            section.items.unshift(buttonName);
         }
-
         return section;
     });
 };
@@ -57,7 +51,7 @@ const configureToolbar = (toolbar) => {
 export const configure = (instanceConfig) => {
     // Update the instance configuration to add the Media menu option to the menus and toolbars and upload_handler.
     return {
-        contextmenu: addContextmenuItem(instanceConfig.contextmenu, ketcherButtonName),
+        contextmenu: addContextmenuItem(instanceConfig.contextmenu, buttonName),
         menu: configureMenu(instanceConfig.menu),
         toolbar: configureToolbar(instanceConfig.toolbar),
 
@@ -67,9 +61,7 @@ export const configure = (instanceConfig) => {
             'image',
             blobInfo.blob(),
             blobInfo.filename(),
-            progress
-        ),
-
+            progress),
         // eslint-disable-next-line camelcase
         images_reuse_filename: true,
     };

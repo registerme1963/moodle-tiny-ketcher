@@ -14,18 +14,18 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Common values helper for the Moodle tiny_ketcher plugin.
+ * Common values helper for the Moodle tiny_keteditor plugin.
  *
- * @module      tiny_ketcher/common
+ * @module      tiny_keteditor/common
  * @copyright   2024 Venkatesan Rangarajan <venkatesanrpu@gmail.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-const component = 'tiny_ketcher';
+const component = 'tiny_keteditor';
 
 export default {
     component,
     pluginName: `${component}/plugin`,
     icon: component,
-    ketcherButtonName: `startKetcher`,
+    buttonName: `KetcherDraw`,
 };
